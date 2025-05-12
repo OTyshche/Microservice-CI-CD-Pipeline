@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const PORT = 3000;
 
-// Enable CORS
+// Enable COR
 app.use(cors());
 
 app.get("/data", (req, res) => {
