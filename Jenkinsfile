@@ -69,7 +69,7 @@ pipeline {
     }
 
     post {
-        always {
+        successfuly {
             echo 'Container successfuly deployed'
             // sh 'docker stop frontend || true'
             // sh 'docker stop backend || true'
