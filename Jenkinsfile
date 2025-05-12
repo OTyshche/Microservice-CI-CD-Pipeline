@@ -75,5 +75,10 @@ pipeline {
             // sh 'docker stop frontend || true'
             // sh 'docker stop backend || true'
         }
+        failure {
+            echo 'Tests failed. Cleaning up containers...'
+            sh 'docker stop frontend || true'
+            sh 'docker stop backend || true'
+        }
     }
 }
