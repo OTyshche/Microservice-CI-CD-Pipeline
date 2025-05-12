@@ -37,7 +37,7 @@ pipeline {
             steps {
                 dir('backend') {
                     // Start the backend container in the background
-                    sh 'docker run -d --name backend_container -p 5000:5000 $BACKEND_IMAGE'
+                    sh 'docker run -d --name backend_container -p 3000:3000 $BACKEND_IMAGE'
                 }
             }
         }
