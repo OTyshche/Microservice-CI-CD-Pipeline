@@ -16,7 +16,7 @@ class TestBackendAPI(unittest.TestCase):
         # Check if the response contains the expected JSON data
         expected_json = {
             "message": "Hello from the Backend! I am Oleksandr-sudo running at version 1.0"
-        }
+        } # Example expected JSON response
         self.assertEqual(response.json(), expected_json)
 
 if __name__ == "__main__":
