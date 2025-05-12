@@ -36,8 +36,11 @@ pipeline {
          stage('Run Backend Container') {
             steps {
                 dir('backend') {
-                    // Start the backend container in the background
-                    sh 'docker run -d --name backend_container -p 3000:3000 $BACKEND_IMAGE'
+                    // Stop and remove any existing container with the same name
+                    sh 'docker stop backend_container || true'
+                    sh 'docker rm -f backend_container || true'
+                    // Run the backend container
+                    sh 'docker run -d --name backend_container -p 3001:3000 my-backend:latest'
                 }
             }
         }
@@ -54,22 +57,27 @@ pipeline {
         stage('Stop Backend Container') {
             steps {
                 // Stop the backend container after tests
-                sh 'docker stop backend_container || true'
+                sh 'docker rm -f backend_container || true'
             }
         }
         
         stage('Deploy Locally') {
             steps {
                 sh '''
-                docker run -d --name backend $BACKEND_IMAGE
-                docker run -d --name frontend -p 8080:80 $FRONTEND_IMAGE
+                docker network create my-network || true
+                docker stop backend || true
+                docker rm -f backend || true
+                docker run -d --name backend --network my-network -p 3000:3000 $BACKEND_IMAGE
+                docker stop frontend || true
+                docker rm -f frontend || true
+                docker run -d --name frontend --network my-network -p 8000:80 $FRONTEND_IMAGE
                 '''
             }
         }
     }
 
     post {
-        successfuly {
+        success {
             echo 'Container successfuly deployed'
             // sh 'docker stop frontend || true'
             // sh 'docker stop backend || true'
@@ -78,6 +86,10 @@ pipeline {
             echo 'Tests failed. Cleaning up containers...'
             sh 'docker stop frontend || true'
             sh 'docker stop backend || true'
+            sh 'docker rm -f frontend || true'
+            sh 'docker rm -f backend || true'
+            sh 'docker stop backend_container || true'
+            sh 'docker rm -f backend_container || true'
         }
     }
 }
