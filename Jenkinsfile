@@ -61,7 +61,6 @@ pipeline {
         stage('Deploy Locally') {
             steps {
                 sh '''
-                docker network create my-network || true
                 docker run -d --name backend $BACKEND_IMAGE
                 docker run -d --name frontend -p 8080:80 $FRONTEND_IMAGE
                 '''
